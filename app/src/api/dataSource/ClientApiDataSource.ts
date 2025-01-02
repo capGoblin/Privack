@@ -24,6 +24,7 @@ import {
   IsAcknowledgedResponse,
   GetCreatedReceiptContentsRequest,
   ReceiptContentsResponse,
+  GetReceivedAcknowledgedContentsRequest,
 } from '../clientApi';
 import { getContextId, getNodeUrl } from '../../utils/node';
 import {
@@ -382,6 +383,45 @@ export class ClientApiDataSource implements ClientApi {
         response.error,
         params,
         this.getCreatedReceiptContents,
+      );
+    }
+
+    return {
+      data: {
+        contents: response?.result?.output ?? {},
+      },
+      error: null,
+    };
+  }
+
+  async getReceivedAcknowledgedContents(
+    params: GetReceivedAcknowledgedContentsRequest,
+  ): ApiResponse<ReceiptContentsResponse> {
+    const { jwtObject, config, error } = getConfigAndJwt();
+    if (error) {
+      return { error };
+    }
+
+    const response = await getJsonRpcClient().query<
+      GetReceivedAcknowledgedContentsRequest,
+      Record<string, string>
+    >(
+      {
+        contextId: jwtObject?.context_id ?? getContextId(),
+        method: ClientMethod.GET_RECEIVED_ACKNOWLEDGED_CONTENTS,
+        argsJson: {
+          caller: jwtObject.executor_public_key,
+        },
+        executorPublicKey: jwtObject.executor_public_key,
+      },
+      config,
+    );
+
+    if (response?.error) {
+      return await this.handleError(
+        response.error,
+        params,
+        this.getReceivedAcknowledgedContents,
       );
     }
 

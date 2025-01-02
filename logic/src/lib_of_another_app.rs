@@ -198,4 +198,29 @@ impl ParcState {
 
         Ok(entries)
     }
+
+    /// Get all receipts with acknowledged status true that were received by the caller, along with their content
+    pub fn get_received_acknowledged_receipt_contents(
+        &self,
+        caller: &str,
+    ) -> Result<BTreeMap<String, String>, String> {
+        let mut entries = BTreeMap::new();
+
+        for receipt_id in &self.receipt_ids {
+            // Check if the recipient matches the caller
+            if let Ok(Some(recipient)) = self.receipts.get(receipt_id) {
+                if recipient == caller {
+                    // Get acknowledgment status for the receipt
+                    if let Ok(Some(true)) = self.acknowledgments.get(receipt_id) {
+                        // If acknowledged, get the content
+                        if let Ok(Some(content)) = self.contents.get(receipt_id) {
+                            entries.insert(receipt_id.clone(), content);
+                        }
+                    }
+                }
+            }
+        }
+
+        Ok(entries)
+    }
 }

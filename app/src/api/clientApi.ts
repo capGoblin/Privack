@@ -36,6 +36,10 @@ export interface GetCreatedReceiptContentsRequest {
   caller: string;
 }
 
+export interface GetReceivedAcknowledgedContentsRequest {
+  caller: string;
+}
+
 export interface ReceiptContentsResponse {
   contents: Record<string, string>;
 }
@@ -73,6 +77,7 @@ export enum ClientMethod {
   ACKNOWLEDGE_RECEIPT = 'acknowledge_receipt',
   IS_ACKNOWLEDGED = 'is_acknowledged',
   GET_CREATED_RECEIPT_CONTENTS = 'get_created_receipt_contents',
+  GET_RECEIVED_ACKNOWLEDGED_CONTENTS = 'get_received_acknowledged_receipt_contents',
 }
 
 export interface ClientApi {
@@ -96,5 +101,8 @@ export interface ClientApi {
   ): ApiResponse<IsAcknowledgedResponse>;
   getCreatedReceiptContents(
     params: GetCreatedReceiptContentsRequest,
+  ): ApiResponse<ReceiptContentsResponse>;
+  getReceivedAcknowledgedContents(
+    params: GetReceivedAcknowledgedContentsRequest,
   ): ApiResponse<ReceiptContentsResponse>;
 }

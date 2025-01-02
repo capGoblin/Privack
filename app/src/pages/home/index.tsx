@@ -372,6 +372,18 @@ export default function HomePage() {
       return;
     }
     setReceivedReceipts(receivedResult.data.acknowledgments);
+
+    // Fetch received acknowledged receipt contents
+    const receivedContentsResult =
+      await new ClientApiDataSource().getReceivedAcknowledgedContents({
+        caller: '', // Will be set by ClientApiDataSource
+      });
+    if (receivedContentsResult?.error) {
+      console.error('Error:', receivedContentsResult.error);
+      window.alert(`${receivedContentsResult.error.message}`);
+      return;
+    }
+    setReceivedContents(receivedContentsResult.data.contents);
   }
 
   useEffect(() => {
@@ -390,15 +402,7 @@ export default function HomePage() {
       return;
     }
 
-    console.log('Acknowledgment response:', result.data);
-
-    // Store the content for the acknowledged receipt
-    setReceivedContents((prev) => ({
-      ...prev,
-      [receiptId]: (result.data as AcknowledgeReceiptResponse).content,
-    }));
-
-    // Refresh the acknowledgments list after successful acknowledgment
+    // Refresh the acknowledgments list and contents after successful acknowledgment
     await fetchReceipts();
   }
 
@@ -464,13 +468,9 @@ export default function HomePage() {
                   <span>{receiptId}</span>
                   <span>{isAcknowledged ? '✓ Acknowledged' : '⨯ Pending'}</span>
                 </ReceiptInfo>
-                {activeTab === 'received' &&
-                  isAcknowledged &&
-                  receivedContents[receiptId] && (
-                    <ReceiptContent>
-                      {receivedContents[receiptId]}
-                    </ReceiptContent>
-                  )}
+                {activeTab === 'received' && receivedContents[receiptId] && (
+                  <ReceiptContent>{receivedContents[receiptId]}</ReceiptContent>
+                )}
                 {activeTab === 'created' && createdContents[receiptId] && (
                   <ReceiptContent>{createdContents[receiptId]}</ReceiptContent>
                 )}
