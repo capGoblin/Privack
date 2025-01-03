@@ -1,6 +1,5 @@
 [package]
-name = "increment"
-description = "Calimero increment/decrement application"
+name = "parc"
 version = "0.1.0"
 edition = "2021"
 
@@ -8,7 +7,10 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
+borsh = "0.9"
+serde = { version = "1.0", features = ["derive"] }
 calimero-sdk = { git = "https://github.com/calimero-network/core", branch = "master" }
+calimero-storage = { git = "https://github.com/calimero-network/core", branch = "master" }
 
 [profile.app-release]
 inherits = "release"

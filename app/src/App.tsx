@@ -32,7 +32,7 @@ function AppRoutes() {
 export default function App() {
   return (
     <AccessTokenWrapper getNodeUrl={getNodeUrl}>
-      <BrowserRouter basename="/core-app-template/">
+      <BrowserRouter basename="/">
         <AppRoutes />
       </BrowserRouter>
     </AccessTokenWrapper>
