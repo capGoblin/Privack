@@ -54,7 +54,7 @@
     "lint:src:fix": "eslint . --ext .ts,.tsx --fix src",
     "preview": "vite preview",
     "predeploy": "pnpm run build",
-    "deploy": "gh-pages -d build",
+    "deploy": "gh-pages -d dist",
     "prettier": "exec prettier . --write"
   },
   "eslintConfig": {
