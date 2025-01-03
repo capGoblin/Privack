@@ -9,10 +9,6 @@ import {
 import {
   ClientApi,
   ClientMethod,
-  GetCountResponse,
-  IncreaseCountRequest,
-  IncreaseCountResponse,
-  ResetCounterResponse,
   AddReceiptRequest,
   AddReceiptResponse,
   GetCreatedReceiptsRequest,
@@ -85,85 +81,6 @@ export class ClientApiDataSource implements ClientApi {
         error: await handleRpcError(error, getNodeUrl),
       };
     }
-  }
-  async getCount(): ApiResponse<GetCountResponse> {
-    const { jwtObject, config, error } = getConfigAndJwt();
-    if (error) {
-      return { error };
-    }
-
-    const response = await getJsonRpcClient().query<any, GetCountResponse>(
-      {
-        contextId: jwtObject?.context_id ?? getContextId(),
-        method: ClientMethod.GET_COUNT,
-        argsJson: {},
-        executorPublicKey: jwtObject.executor_public_key,
-      },
-      config,
-    );
-    if (response?.error) {
-      return await this.handleError(response.error, {}, this.getCount);
-    }
-
-    return {
-      data: { count: Number(response?.result?.output) ?? 0 },
-      error: null,
-    };
-  }
-
-  async increaseCount(
-    params: IncreaseCountRequest,
-  ): ApiResponse<IncreaseCountResponse> {
-    const { jwtObject, config, error } = getConfigAndJwt();
-    if (error) {
-      return { error };
-    }
-
-    const response = await getJsonRpcClient().mutate<
-      IncreaseCountRequest,
-      IncreaseCountResponse
-    >(
-      {
-        contextId: jwtObject?.context_id ?? getContextId(),
-        method: ClientMethod.INCREASE_COUNT,
-        argsJson: params,
-        executorPublicKey: jwtObject.executor_public_key,
-      },
-      config,
-    );
-    if (response?.error) {
-      return await this.handleError(response.error, {}, this.increaseCount);
-    }
-
-    return {
-      data: Number(response?.result?.output) ?? null,
-      error: null,
-    };
-  }
-
-  async reset(): ApiResponse<ResetCounterResponse> {
-    const { jwtObject, config, error } = getConfigAndJwt();
-    if (error) {
-      return { error };
-    }
-
-    const response = await getJsonRpcClient().mutate<any, ResetCounterResponse>(
-      {
-        contextId: jwtObject?.context_id ?? getContextId(),
-        method: ClientMethod.RESET,
-        argsJson: {},
-        executorPublicKey: jwtObject.executor_public_key,
-      },
-      config,
-    );
-    if (response?.error) {
-      return await this.handleError(response.error, {}, this.reset);
-    }
-
-    return {
-      data: Number(response?.result?.output) ?? null,
-      error: null,
-    };
   }
 
   async addReceipt(params: AddReceiptRequest): ApiResponse<AddReceiptResponse> {
