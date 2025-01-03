@@ -54,6 +54,22 @@ export interface IsAcknowledgedResponse {
   is_acknowledged: boolean;
 }
 
+export interface GetCreatorOfReceiptRequest {
+  receipt_id: string;
+}
+
+export interface GetRecipientOfReceiptRequest {
+  receipt_id: string;
+}
+
+export interface GetCreatorOfReceiptResponse {
+  creator: string;
+}
+
+export interface GetRecipientOfReceiptResponse {
+  recipient: string;
+}
+
 export enum ClientMethod {
   ADD_RECEIPT = 'add_receipt',
   GET_CREATED_RECEIPTS = 'get_created_receipts',
@@ -62,6 +78,8 @@ export enum ClientMethod {
   IS_ACKNOWLEDGED = 'is_acknowledged',
   GET_CREATED_RECEIPT_CONTENTS = 'get_created_receipt_contents',
   GET_RECEIVED_ACKNOWLEDGED_CONTENTS = 'get_received_acknowledged_receipt_contents',
+  GET_CREATOR_OF_RECEIPT = 'get_creator_of_receipt',
+  GET_RECIPIENT_OF_RECEIPT = 'get_recipient_of_receipt',
 }
 
 export interface ClientApi {
@@ -84,4 +102,10 @@ export interface ClientApi {
   getReceivedAcknowledgedContents(
     params: GetReceivedAcknowledgedContentsRequest,
   ): ApiResponse<ReceiptContentsResponse>;
+  getCreatorOfReceipt(
+    params: GetCreatorOfReceiptRequest,
+  ): ApiResponse<GetCreatorOfReceiptResponse>;
+  getRecipientOfReceipt(
+    params: GetRecipientOfReceiptRequest,
+  ): ApiResponse<GetRecipientOfReceiptResponse>;
 }

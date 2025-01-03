@@ -69,12 +69,28 @@ export function ReceivedReceiptsList() {
           throw new Error(acknowledgedContentsResult.error.message);
         }
 
+        // Get creator addresses for each receipt
+        const creatorAddresses: Record<string, string> = {};
+        for (const id of Object.keys(receivedResult.data.acknowledgments)) {
+          const creatorResult = await api.getCreatorOfReceipt({
+            receipt_id: id,
+          });
+          if (creatorResult?.error) {
+            console.error(
+              `Failed to fetch creator for receipt ${id}:`,
+              creatorResult.error,
+            );
+            continue;
+          }
+          creatorAddresses[id] = creatorResult.data.creator;
+        }
+
         // Combine the data
         const receiptsList = Object.entries(
           receivedResult.data.acknowledgments,
         ).map(([id, isAcknowledged]) => ({
           id,
-          senderAddress: 'Unknown', // We'll need to implement this in the API later
+          senderAddress: creatorAddresses[id] || 'Unknown',
           content: isAcknowledged
             ? acknowledgedContentsResult.data.contents[id] || ''
             : '',

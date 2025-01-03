@@ -107,12 +107,28 @@ export function CreatedReceiptsSidebar({
           throw new Error(contentsResult.error.message);
         }
 
+        // Get recipient addresses for each receipt
+        const recipientAddresses: Record<string, string> = {};
+        for (const id of Object.keys(createdResult.data.acknowledgments)) {
+          const recipientResult = await api.getRecipientOfReceipt({
+            receipt_id: id,
+          });
+          if (recipientResult?.error) {
+            console.error(
+              `Failed to fetch recipient for receipt ${id}:`,
+              recipientResult.error,
+            );
+            continue;
+          }
+          recipientAddresses[id] = recipientResult.data.recipient;
+        }
+
         // Combine the data
         const receiptsList = Object.entries(
           createdResult.data.acknowledgments,
         ).map(([id, isAcknowledged]) => ({
           id,
-          recipientAddress: 'Unknown', // We'll need to implement this in the API later
+          recipientAddress: recipientAddresses[id] || 'Unknown',
           content: contentsResult.data.contents[id] || '',
           isAcknowledged,
         }));

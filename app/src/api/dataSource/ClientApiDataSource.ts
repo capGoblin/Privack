@@ -21,6 +21,10 @@ import {
   GetCreatedReceiptContentsRequest,
   ReceiptContentsResponse,
   GetReceivedAcknowledgedContentsRequest,
+  GetCreatorOfReceiptRequest,
+  GetCreatorOfReceiptResponse,
+  GetRecipientOfReceiptRequest,
+  GetRecipientOfReceiptResponse,
 } from '../clientApi';
 import { getContextId, getNodeUrl } from '../../utils/node';
 import {
@@ -345,6 +349,84 @@ export class ClientApiDataSource implements ClientApi {
     return {
       data: {
         contents: response?.result?.output ?? {},
+      },
+      error: null,
+    };
+  }
+
+  async getCreatorOfReceipt(
+    params: GetCreatorOfReceiptRequest,
+  ): ApiResponse<GetCreatorOfReceiptResponse> {
+    const { jwtObject, config, error } = getConfigAndJwt();
+    if (error) {
+      return { error };
+    }
+
+    const response = await getJsonRpcClient().query<
+      GetCreatorOfReceiptRequest,
+      string
+    >(
+      {
+        contextId: jwtObject?.context_id ?? getContextId(),
+        method: ClientMethod.GET_CREATOR_OF_RECEIPT,
+        argsJson: {
+          receipt_id: params.receipt_id,
+        },
+        executorPublicKey: jwtObject.executor_public_key,
+      },
+      config,
+    );
+
+    if (response?.error) {
+      return await this.handleError(
+        response.error,
+        params,
+        this.getCreatorOfReceipt,
+      );
+    }
+
+    return {
+      data: {
+        creator: response?.result?.output ?? '',
+      },
+      error: null,
+    };
+  }
+
+  async getRecipientOfReceipt(
+    params: GetRecipientOfReceiptRequest,
+  ): ApiResponse<GetRecipientOfReceiptResponse> {
+    const { jwtObject, config, error } = getConfigAndJwt();
+    if (error) {
+      return { error };
+    }
+
+    const response = await getJsonRpcClient().query<
+      GetRecipientOfReceiptRequest,
+      string
+    >(
+      {
+        contextId: jwtObject?.context_id ?? getContextId(),
+        method: ClientMethod.GET_RECIPIENT_OF_RECEIPT,
+        argsJson: {
+          receipt_id: params.receipt_id,
+        },
+        executorPublicKey: jwtObject.executor_public_key,
+      },
+      config,
+    );
+
+    if (response?.error) {
+      return await this.handleError(
+        response.error,
+        params,
+        this.getRecipientOfReceipt,
+      );
+    }
+
+    return {
+      data: {
+        recipient: response?.result?.output ?? '',
       },
       error: null,
     };

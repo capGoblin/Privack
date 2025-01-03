@@ -89,7 +89,6 @@ export default function CreatePage() {
       }
 
       window.alert('Receipt created successfully!');
-      navigate('/');
     } catch (error) {
       console.error('Error creating receipt:', error);
       window.alert('Failed to create receipt. Please try again.');
