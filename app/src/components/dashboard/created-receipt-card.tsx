@@ -52,6 +52,9 @@ const RecipientAddress = styled.div`
   font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.5);
   margin-top: 0.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 interface CreatedReceiptCardProps {
